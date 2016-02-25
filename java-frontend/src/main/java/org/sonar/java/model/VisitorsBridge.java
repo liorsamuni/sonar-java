@@ -19,10 +19,13 @@
  */
 package org.sonar.java.model;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.sonar.sslr.api.RecognitionException;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.java.CharsetAwareVisitor;
@@ -39,11 +42,10 @@ import org.sonar.plugins.java.api.tree.ImportClauseTree;
 import org.sonar.plugins.java.api.tree.Tree;
 import org.sonar.squidbridge.AstScannerExceptionHandler;
 
-import javax.annotation.Nullable;
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.sonar.sslr.api.RecognitionException;
 
 public class VisitorsBridge {
 
@@ -121,7 +123,7 @@ public class VisitorsBridge {
     JavaFileScannerContext javaFileScannerContext = createScannerContext(tree, semanticModel, analyseAccessors, sonarComponents, fileParsed);
     // Symbolic execution checks
     if (symbolicExecutionEnabled && isNotJavaLangOrSerializable(PackageUtils.packageName(tree.packageDeclaration(), "/"))) {
-      new SymbolicExecutionVisitor().scanFile(javaFileScannerContext);
+      new SymbolicExecutionVisitor(executableScanners).scanFile(javaFileScannerContext);
     }
     for (JavaFileScanner scanner : executableScanners) {
       scanner.scanFile(javaFileScannerContext);

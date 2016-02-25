@@ -19,17 +19,30 @@
  */
 package org.sonar.java.se;
 
-import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.java.ast.visitors.SubscriptionVisitor;
 import org.sonar.java.se.symbolicvalues.BinaryRelation;
+import org.sonar.plugins.java.api.JavaFileScanner;
 import org.sonar.plugins.java.api.tree.Tree;
 
-import java.util.List;
+import com.google.common.collect.Lists;
 
 public class SymbolicExecutionVisitor extends SubscriptionVisitor {
   private static final Logger LOG = LoggerFactory.getLogger(SymbolicExecutionVisitor.class);
+  
+  private final ExplodedGraphWalker.Factory egwFactory;
+  
+  public SymbolicExecutionVisitor(List<JavaFileScanner> executableScanners) {
+    egwFactory = new ExplodedGraphWalker.Factory(executableScanners);
+  }
+  
+  public SymbolicExecutionVisitor() {
+    egwFactory = new ExplodedGraphWalker.Factory(Collections.<JavaFileScanner>emptyList());
+  }
 
   @Override
   public List<Tree.Kind> nodesToVisit() {
@@ -39,7 +52,7 @@ public class SymbolicExecutionVisitor extends SubscriptionVisitor {
   @Override
   public void visitNode(Tree tree) {
     try {
-      tree.accept(new ExplodedGraphWalker(context));
+      tree.accept(egwFactory.walker(context));
     } catch (ExplodedGraphWalker.MaximumStepsReachedException | ExplodedGraphWalker.ExplodedGraphTooBigException | BinaryRelation.TransitiveRelationExceededException exception) {
       LOG.debug("Could not complete symbolic execution: ", exception);
     }

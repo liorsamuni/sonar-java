@@ -19,11 +19,15 @@
  */
 package org.sonar.java.se;
 
-import com.google.common.collect.Multimap;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+
+import java.util.Map;
 
 import org.junit.Test;
 import org.sonar.java.model.DefaultJavaFileScannerContext;
 import org.sonar.java.se.checks.ConditionAlwaysTrueOrFalseCheck;
+import org.sonar.java.se.checks.CustomUnclosedResourcesCheck;
 import org.sonar.java.se.checks.LocksNotUnlockedCheck;
 import org.sonar.java.se.checks.NullDereferenceCheck;
 import org.sonar.java.se.checks.SECheck;
@@ -33,10 +37,7 @@ import org.sonar.plugins.java.api.JavaFileScanner;
 import org.sonar.plugins.java.api.JavaFileScannerContext;
 import org.sonar.plugins.java.api.tree.Tree;
 
-import java.util.Map;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
+import com.google.common.collect.Multimap;
 
 public class ExplodedGraphWalkerTest {
 
@@ -124,6 +125,7 @@ public class ExplodedGraphWalkerTest {
       reportIssuesFor(context, new NullDereferenceCheck());
       reportIssuesFor(context, new ConditionAlwaysTrueOrFalseCheck());
       reportIssuesFor(context, new UnclosedResourcesCheck());
+      reportIssuesFor(context, new CustomUnclosedResourcesCheck());
       reportIssuesFor(context, new LocksNotUnlockedCheck());
     }
 
