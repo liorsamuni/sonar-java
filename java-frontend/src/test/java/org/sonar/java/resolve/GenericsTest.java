@@ -597,25 +597,33 @@ public class GenericsTest {
   public void test_method_resolution_for_parametrized_method_with_provided_substitution() {
     JavaType type = (JavaType) declaredTypesFromFile("src/test/files/resolve/ParametrizedMethodsWithProvidedSubstitution.java").get(0);
 
-    methodHasUsagesWithSameTypeAs(type, "f1", 0, (String) null, null);
-    methodHasUsagesWithSameTypeAs(type, "f1", 1, (String) null);
+    methodHasUsagesWithSameTypeAs(type, "f1", 0, "bString", "bb");
+    methodHasUsagesWithSameTypeAs(type, "f1", 1, "aType");
 
-    methodHasUsagesWithSameTypeAs(type, "f2", 0, (String) null, null, null);
-    methodHasUsagesWithSameTypeAs(type, "f2", 1, (String) null);
+    methodHasUsagesWithSameTypeAs(type, "f2", 0, "integer", "string", "aType");
+    methodHasUsagesWithSameTypeAs(type, "f2", 1, "aType");
 
-    methodHasUsagesWithSameTypeAs(type, "f3", (String) null);
+    methodHasUsagesWithSameTypeAs(type, "f3", "integer");
     methodHasUsagesWithSameTypeAs(type, "f4", (String) null);
-    methodHasUsagesWithSameTypeAs(type, "f5", (String) null, null, null);
-    methodHasUsagesWithSameTypeAs(type, "f6", (String) null);
-    methodHasUsagesWithSameTypeAs(type, "f7", (String) null);
 
-    methodHasUsagesWithSameTypeAs(type, "f8", 0, (String) null);
-    methodHasUsagesWithSameTypeAs(type, "f8", 1, (String) null, null);
+    Type stringArray = getMethodInvocationType(getMethodSymbol(type, "f4"), 0);
+    // FIXME should be string Array!
+    assertThat(stringArray.isArray()).isTrue();
+    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.is("java.lang.String")).isFalse();
+    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.isTagged(JavaType.TYPEVAR)).isTrue();
 
-    methodHasUsagesWithSameTypeAs(type, "f9", 0, (String) null, null);
-    methodHasUsagesWithSameTypeAs(type, "f9", 1, (String) null);
+    methodHasUsagesWithSameTypeAs(type, "f5", "cStringInteger", "cStringInteger", "cAB");
+    methodHasUsagesWithSameTypeAs(type, "f6", "wcSuperA");
+    methodHasUsagesWithSameTypeAs(type, "f7", "integer");
 
-    methodHasUsagesWithSameTypeAs(type, "f10", (String) null);
+    methodHasUsagesWithSameTypeAs(type, "f8", 0, "object");
+    methodHasUsagesWithSameTypeAs(type, "f8", 1, "bType", "dType");
+
+    methodHasUsagesWithSameTypeAs(type, "f9", 0, "object");
+    // FIXME SONARJAVA-1298 'bType' does not match the contract '<T extends B & I>' !
+    methodHasUsagesWithSameTypeAs(type, "f9", 1, /* WRONG! */ "bType", "dType");
+
+    methodHasUsagesWithSameTypeAs(type, "f10", "integer");
   }
 
   private static void methodHasUsagesWithSameTypeAs(JavaType type, String methodName, String... variables) {

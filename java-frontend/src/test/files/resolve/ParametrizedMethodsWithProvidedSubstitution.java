@@ -46,11 +46,11 @@ class ParametrizedMethodsWithProvidedSubstitution {
     return null;
   }
 
-  <T extends B & I> T f9(T t) {
+  Object f9(Object o) {
     return null;
   }
 
-  Object f9(Object o) {
+  <T extends B & I> T f9(T t) {
     return null;
   }
 
@@ -74,7 +74,7 @@ class ParametrizedMethodsWithProvidedSubstitution {
 
     this.<String, Integer>f5("foo", Integer.valueOf(42));
     this.<String, Integer>f5("foo", 42);
-    this.<A, D>f5(new A(), new D());
+    this.<A, B>f5(new A(), new B());
 
     this.<A>f6(new B<A>());
 
@@ -93,15 +93,19 @@ class ParametrizedMethodsWithProvidedSubstitution {
 
   // reference types
   Object object;
-  B<String> bString;
   Integer integer;
+  String string;
   String[] stringArray;
-  C<String, Integer> cStringInteger;
-  C<A, B> cAB;
+
+  A aType;
+  B bType;
+  B<B> bb;
+  B<String> bString;
+  B<Integer> bInteger;
   B<? super A> wcSuperA;
+  C<A, B> cAB;
+  C<String, Integer> cStringInteger;
   D dType;
-  A a;
-  B b;
 
   interface I {
   }
