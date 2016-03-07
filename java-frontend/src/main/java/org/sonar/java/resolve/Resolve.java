@@ -96,13 +96,16 @@ public class Resolve {
         newSubstitution.add(entry.getKey(), substituteTypeParameter(entry.getValue(), substitution));
       }
       return parametrizedTypeCache.getParametrizedTypeType(ptt.rawType.getSymbol(), newSubstitution);
-    }
-    if (type instanceof JavaType.WildCardType) {
+    } else if (type instanceof JavaType.WildCardType) {
       JavaType.WildCardType wildCardType = (JavaType.WildCardType) type;
       substitutedType = substitution.substitutedType(wildCardType.bound);
       if (substitutedType != null) {
         return parametrizedTypeCache.getWildcardType(substitutedType, wildCardType.boundType);
       }
+    } else if (type instanceof JavaType.ArrayJavaType) {
+      JavaType elementType = ((JavaType.ArrayJavaType) type).elementType;
+      // FIXME SONARJAVA-1574
+      return new JavaType.ArrayJavaType(substituteTypeParameter(elementType, substitution), symbols.arrayClass);
     }
     return type;
   }

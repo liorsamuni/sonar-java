@@ -26,6 +26,10 @@ class ParametrizedMethodsWithProvidedSubstitution {
     return null;
   }
 
+  <T> T[][] f4(T[] a, int i) {
+    return null;
+  }
+
   <K, V> C<K, V> f5(K k, V v) {
     return null;
   }
@@ -71,6 +75,7 @@ class ParametrizedMethodsWithProvidedSubstitution {
     this.<Integer>f3(0, new B<Integer>());
 
     this.<String>f4(new String[0]);
+    this.<String>f4(new String[0], 0);
 
     this.<String, Integer>f5("foo", Integer.valueOf(42));
     this.<String, Integer>f5("foo", 42);
@@ -96,6 +101,7 @@ class ParametrizedMethodsWithProvidedSubstitution {
   Integer integer;
   String string;
   String[] stringArray;
+  String[] stringArray2Dim;
 
   A aType;
   B bType;

@@ -604,13 +604,21 @@ public class GenericsTest {
     methodHasUsagesWithSameTypeAs(type, "f2", 1, "aType");
 
     methodHasUsagesWithSameTypeAs(type, "f3", "integer");
-    methodHasUsagesWithSameTypeAs(type, "f4", (String) null);
 
-    Type stringArray = getMethodInvocationType(getMethodSymbol(type, "f4"), 0);
-    // FIXME should be string Array!
+    // FIXME SONARJAVA-1574 should be the same array type for all string Array!
+    methodHasUsagesWithSameTypeAs(type, "f4", 0, /* should be "stringArray" */ (String) null);
+    Type stringArray = getMethodInvocationType(getMethodSymbol(type, "f4", 0), 0);
     assertThat(stringArray.isArray()).isTrue();
-    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.is("java.lang.String")).isFalse();
-    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.isTagged(JavaType.TYPEVAR)).isTrue();
+    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.is("java.lang.String")).isTrue();
+
+    methodHasUsagesWithSameTypeAs(type, "f4", 1, /* should be "stringArray2Dim" */ (String) null);
+    stringArray = getMethodInvocationType(getMethodSymbol(type, "f4", 1), 0);
+    assertThat(stringArray.isArray()).isTrue();
+    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.isArray()).isTrue();
+    stringArray = ((JavaType.ArrayJavaType) stringArray).elementType;
+    // FIXME SONARJAVA-1574 should be the same array type for all string Array!
+    assertThat(stringArray.isArray()).isTrue();
+    assertThat(((JavaType.ArrayJavaType) stringArray).elementType.is("java.lang.String")).isTrue();
 
     methodHasUsagesWithSameTypeAs(type, "f5", "cStringInteger", "cStringInteger", "cAB");
     methodHasUsagesWithSameTypeAs(type, "f6", "wcSuperA");
