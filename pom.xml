@@ -74,7 +74,7 @@
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
-    <sonar.version>4.5.4</sonar.version>
+    <sonar.version>5.0</sonar.version>
     <orchestrator.version>3.10.1</orchestrator.version>
     <sslr.version>1.21</sslr.version>
     <jacoco.previous.version>0.7.4.201502262128</jacoco.previous.version>
@@ -101,7 +101,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <configuration />
+          <configuration/>
         </plugin>
       </plugins>
     </pluginManagement>
